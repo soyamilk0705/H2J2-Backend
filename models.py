@@ -96,5 +96,3 @@ class Food(db.Model):
     protein = db.Column(db.String(30))
     fat = db.Column(db.String(30))
     calorie = db.Column(db.String(30))
-
-
