@@ -103,7 +103,7 @@ def check_id(*request_element):
 #     return jsonify(json_request)
 
 
-    # ---------------FAN 코드-------------------
+    # ---------------코드-------------------
     # if user_info is not None:
     #     if user_pwd == user_info['user_pwd']:
     #         auth.token_recreation(user_id)
@@ -127,7 +127,7 @@ def logout():
 
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:rootpassword@localhost:3306/h2j2_project"  
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://"  
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
 app.config['SECRET_KEY'] = 'sdfsdfsdddf'
