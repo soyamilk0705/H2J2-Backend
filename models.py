@@ -64,18 +64,18 @@ class Exercise(db.Model):
     name = db.Column(db.String(300), unique=True)
     exercise_type = db.Column(db.String(30))
     ex_video = db.relationship('Exercise_video', backref='exercise', lazy=True)
-    ex_area = db.relationship('Exercise_', backref='exercise', lazy=True)
+    ex_area = db.relationship('Exercise_area', backref='exercise', lazy=True)
 
 
 class Exercise_video(db.Model):
-    __tablename__ = 'exercise_video'
+    __tablename__ = 'ex_video'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     exercise_id = db.Column(db.ForeignKey('exercise.id'), nullable=False)
     url = db.Column(db.String(300), unique=True)
 
 
 class Exercise_area(db.Model):
-    __tablename__ = 'exercise_area'
+    __tablename__ = 'ex_area'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     exercise_id = db.Column(db.ForeignKey('exercise.id'), nullable=False)
     arm = db.Column(db.String(30))
