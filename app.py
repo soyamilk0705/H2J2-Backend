@@ -85,7 +85,6 @@ def register(*request_elements):
     return jsonify(json_request)
 
     
-
 @app.route('/api/login', methods=['POST'])
 @validate_params(
     Param('userid', JSON, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  
