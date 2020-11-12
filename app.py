@@ -126,40 +126,8 @@ def logout(*request_elements):
     else:
         return {'logout': False}
     
-<<<<<<< HEAD
-=======
-#     else:
-#         json_request = {'login': False}
 
-#     return jsonify(json_request)
-
-
-    # ---------------코드-------------------
-    # if user_info is not None:
-    #     if user_pwd == user_info['user_pwd']:
-    #         auth.token_recreation(user_id)
-    #         json_request = {'login': 'True', 'user_id': user_id, 'level': user_info['level'], 'token': auth.token_get(user_id)}
-    #         resp = make_response(json_request)
-    #         resp.headers['Authorization'] = auth.token_get(user_id)
-    #         return resp
-    #     else:
-    #         json_request = {'login': False}
-    # else:
-    #     json_request = {'login': False}
-
-    # return jsonify(json_request)
-
-
-
-@app.route('/logout')
-def logout():
-    pass
-
-
-
->>>>>>> f3d45753323da4a75aae2f6e653f41118f5e132e
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://"  
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:rootpassword@localhost:3306/h2j2_project"  
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
 app.config['SECRET_KEY'] = 'rlawjdtnrlawngusrlagmltndlagywls'
