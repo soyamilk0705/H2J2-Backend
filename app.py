@@ -1,12 +1,14 @@
 import bcrypt
+import jwt
 from flask import Flask
 from flask import render_template
-from flask import request
-from flask_request_validator import (Param, JSON, GET, Pattern, validate_params)
+from flask import request, make_response
 from flask import jsonify
+from flask_cors import CORS
+from flask_request_validator import (Param, JSON, GET, Pattern, validate_params)
 from models import User
 from models import db
-from flask_cors import CORS
+from datetime import datetime, timedelta
 
 app = Flask(__name__, template_folder='../H2J2-Front/public', static_folder='../H2J2-Front/public/assets')
 CORS(app)
@@ -16,13 +18,27 @@ def index():
     return render_template("index.html")
 
 
+@app.route('/api/check/id', methods=['GET'])
+@validate_params(
+    Param('userid', GET, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  
+)
+def check_id(*request_element):
+    userid = request_element[0]
+    check = User.query.filter_by(userid=userid).first()
+
+    if check is None:
+        return {'id': True}
+    else:
+        return {'id': False}
+
+
 @app.route('/api/register', methods=['POST'])
 @validate_params(
     Param('userid', JSON, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  
     Param('passwd', JSON, str, required=True),
     Param('name', JSON, str, rules=[Pattern(r'^[가-힣]*$')], required=True),
-    Param('phone', JSON, str, required=True),
-    Param('email', JSON, str, required=True),
+    Param('phone', JSON, str, rules=[Pattern(r'\d{2,3}-\d{3,4}-\d{4}')], required=True),
+    Param('email', JSON, str, rules=[Pattern(r'[a-zA-Z0-9_-]+@[a-z]+.[a-z]+')], required=True),
     Param('address', JSON, str, required=True),
     Param('age', JSON, str, required=True),
     Param('sex', JSON, str, required=True),
@@ -43,23 +59,23 @@ def register(*request_elements):
         
         bmi = round(int(request_elements[9]) / ((int(request_elements[8]) * 0.01) * (int(request_elements[8]) * 0.01)), 1)
 
-        # user = User(
-        #     userid = request_elements[0],
-        #     passwd = hashed_password,
-        #     name = request_elements[2],
-        #     phone = request_elements[3],
-        #     email = request_elements[4]
-        #     address = request_elements[5],
-        #     age = request_elements[6],
-        #     sex = request_elements[7],
-        #     height = request_elements[8],
-        #     weight = request_elements[9],
-        #     basic_metabolic = basic_metabolic,
-        #     bmi = bmi
-        # )
+        user = User(
+            userid = request_elements[0],
+            passwd = hashed_password,
+            name = request_elements[2],
+            phone = request_elements[3],
+            email = request_elements[4],
+            address = request_elements[5],
+            age = request_elements[6],
+            sex = request_elements[7],
+            height = request_elements[8],
+            weight = request_elements[9],
+            basic_metabolic = basic_metabolic,
+            bmi = bmi
+        )
 
-        # db.session.add(user)
-        # db.session.commit()
+        db.session.add(user)
+        db.session.commit()
 
         json_request = {'register': True}
         
@@ -69,73 +85,59 @@ def register(*request_elements):
     return jsonify(json_request)
 
     
-@app.route('/api/check/id', methods=['GET'])
+
+@app.route('/api/login', methods=['POST'])
 @validate_params(
-    Param('userid', GET, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  
+    Param('userid', JSON, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  
+    Param('passwd', JSON, str, required=True)
 )
-def check_id(*request_element):
-    userid = request_element[0]
-    check = User.query.filter_by(userid=userid).first()
+def login(*request_elements):
+    userid = request_elements[0]
+    passwd = request_elements[1]
+    user = User.query.filter_by(userid=userid).first()
 
-    if check is None:
-        return {'id': True}
+    if user is not None:
+        is_pw_correct = bcrypt.checkpw(passwd.encode('UTF-8'), user.passwd.encode('UTF-8'))
+        if is_pw_correct:
+            payload = {											
+                'userid' : userid,
+                'exp' : datetime.now() + timedelta(seconds=1800) # 토큰 만료 시간
+            }
+            token = jwt.encode(payload, app.config['JWT_SECRET_KEY'], 'HS256')	
+            json_request = {'login': 'True', 'userid': userid, 'level': 1, 'token': token.decode('UTF-8')}
+            resp = make_response(json_request)
+            resp.headers['Authorization'] = token.decode('UTF-8')
+            return resp
+        
+        else:
+            json_request = {'login': False}
     else:
-        return {'id': False}
+        json_request = {'login': False}
+
+    return jsonify(json_request)
 
 
-# @app.route('/api/login', methods=['POST'])
-# @validate_params(
-#     Param('userid', JSON, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  
-#     Param('passwd', JSON, str, required=True)
-# )
-# def login(*request_elements):
-#     userid = request_elements[0]
-#     passwd = request_elements[1]
-#     user = User.query.filter_by(userid=userid).first()
-
-#     if user is not None:
-#         is_pw_correct = bcrypt.checkpw(passwd.encode('UTF-8'), user.passwd.encode('UTF-8'))
-#         if is_pw_correct:
+@app.route('/api/logout', methods=['GET'])
+@validate_params(
+    Param('userid', GET, str, rules=[Pattern(r'^.{1,50}$')], required=True)
+)
+def logout(*request_elements):
+    if request_elements[0] is not None:
+        return {'logout': True}    
+    else:
+        return {'logout': False}
     
-#     else:
-#         json_request = {'login': False}
-
-#     return jsonify(json_request)
-
-
-    # ---------------FAN 코드-------------------
-    # if user_info is not None:
-    #     if user_pwd == user_info['user_pwd']:
-    #         auth.token_recreation(user_id)
-    #         json_request = {'login': 'True', 'user_id': user_id, 'level': user_info['level'], 'token': auth.token_get(user_id)}
-    #         resp = make_response(json_request)
-    #         resp.headers['Authorization'] = auth.token_get(user_id)
-    #         return resp
-    #     else:
-    #         json_request = {'login': False}
-    # else:
-    #     json_request = {'login': False}
-
-    # return jsonify(json_request)
-
-
-
-@app.route('/logout')
-def logout():
-    pass
-
-
-
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:rootpassword@localhost:3306/h2j2_project"  
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
-app.config['SECRET_KEY'] = 'sdfsdfsdddf'
-# app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=30) # 세션유지 시간을 30분으로 지정
+app.config['SECRET_KEY'] = 'rlawjdtnrlawngusrlagmltndlagywls'
+app.config['JWT_SECRET_KEY'] = 'rlawjdtnrlawngusrlagmltndlagywls'
 
 db.init_app(app)
 db.app = app
 db.create_all()
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
