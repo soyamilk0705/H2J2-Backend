@@ -16,6 +16,23 @@ class User(db.Model):
     weight = db.Column(db.String(30))
     basic_metabolic = db.Column(db.String(30))
     bmi = db.Column(db.String(30))
+    mileage = db.Column(db.String(30))
+
+    @property
+    def serialize(self):
+        return{
+            'userid': self.userid,
+            'name': self.name,
+            'phone': self.phone,
+            'email': self.email,
+            'address': self.address,
+            'age': self.age,
+            'sex': self.sex,
+            'height': self.height,
+            'weight': self.weight,
+            'basic_metabolic': self.basic_metabolic,
+            'bmi': self.bmi
+        }
 
 
 class Clothes_site(db.Model):
