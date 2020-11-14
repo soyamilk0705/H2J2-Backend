@@ -61,7 +61,6 @@ def register(*request_elements):
             basic_metabolic = round(66.47 + (13.75 * int(request_elements[9])) + (5 * int(request_elements[8])) - (6.76 * int(request_elements[6])), 1)
         else:
             basic_metabolic = round(655.1 + (9.56 * int(request_elements[9])) + (1.85 * int(request_elements[8])) - (4.68 * int(request_elements[6])), 1)
-        
         bmi = round(int(request_elements[9]) / ((int(request_elements[8]) * 0.01) * (int(request_elements[8]) * 0.01)), 1)
 
         DBManager.db_register(request_elements, basic_metabolic, bmi)
@@ -115,29 +114,29 @@ def logout(*request_elements):
         return {'logout': False}
 
 
-# @app.route('/api/profile/drop', methods=['POST'])
-# @validate_params(
-#     Param('userid', JSON, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  # 소문자와 숫자만 가능
-#     Param('passwd', JSON, str, required=True)
-# )
-# def drop_user(*request_elements):
-#     token = request.headers.get('Authorization')
-#     userid = request_elements[0]
-#     passwd = request_elements[1]
+@app.route('/api/profile/drop', methods=['POST'])
+@validate_params(
+    Param('userid', JSON, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  # 소문자와 숫자만 가능
+    Param('passwd', JSON, str, required=True)
+)
+def drop_user(*request_elements):
+    token = request.headers.get('Authorization')
+    userid = request_elements[0]
+    passwd = request_elements[1]
 
-#     print("request : ", request_elements[0])
+    print("request : ", request_elements[1])
         
-#     if token is not None:
-#         user = User.query.filter_by(userid=userid).first()
-#         if user is not None:
-#             is_pw_correct = bcrypt.checkpw(passwd.encode('UTF-8'), user.passwd.encode('UTF-8')) 
-#             if is_pw_correct:
-#                 DBManager.db_drop_user(user)
-#                 return {'delete': True}
+    if token is not None:
+        user = User.query.filter_by(userid=userid).first()
+        if user is not None:
+            is_pw_correct = bcrypt.checkpw(passwd.encode('UTF-8'), user.passwd.encode('UTF-8')) 
+            if is_pw_correct:
+                DBManager.db_drop_user(user)
+                return {'delete': True}
 
-#             return {'delete': False}
+            return {'delete': False}
 
-#     return {'token': False}
+    return {'token': False}
 
 
 
@@ -153,7 +152,7 @@ def logout(*request_elements):
     Param('age', JSON, str, required=True),
     Param('sex', JSON, str, required=True),
     Param('height', JSON, str, required=True),
-    Param('weight', JSON, str, required=True)
+    Param('weight', JSON, str, required=True),
 )
 def edit_profile(*request_elements):
     token = request.headers.get('Authorization')
@@ -194,25 +193,23 @@ def info_profile(*request_elements):
     return {'token': False}
 
 
-# @app.route('/api/mileage', methods=['GET'])
-# @validate_params(
-#     Param('userid', GET, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  # 소문자와 숫자만 가능
-# )
-# def mileage(*request_elements):
-#     token = request.headers.get('Authorization')
-#     userid = request_elements[0]
-    
-#     if token is not None:
-#         user = User.query.filter_by(userid=userid).first()
-#         if user is not None:
-#             return {'mileage': True}
+@app.route('/api/mileage', methods=['GET'])
+@validate_params(
+    Param('userid', GET, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  # 소문자와 숫자만 가능
+)
+def mileage(*request_elements):
+    token = request.headers.get('Authorization')
+    userid = request_elements[0]
 
-#         return {'mileage': False} 
+    if token is not None:
+        user = User.query.filter_by(userid=userid).first()
+        if user is not None:
+            return {'mileage': user.mileage}
 
-#     return {'token': False}
+    return {'token': False}
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://"  
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:rootpassword@localhost:3306/h2j2_project"  
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
 app.config['SECRET_KEY'] = 'rlawjdtnrlawngusrlagmltndlagywls'
