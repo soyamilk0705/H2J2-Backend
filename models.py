@@ -63,6 +63,7 @@ class Clothes_product(db.Model):
     season = db.Column(db.String(30))
     sex = db.Column(db.String(30))
     url = db.Column(db.String(300), unique=True)
+    fin = db.Column(db.String(30))
     product = db.relationship('Clothes_image', backref='clothes_product', lazy=True)
 
 
@@ -88,20 +89,21 @@ class Exercise(db.Model):
 class Exercise_video(db.Model):
     __tablename__ = 'ex_video'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    exercise_id = db.Column(db.ForeignKey('exercise.id'), nullable=False)
+    ex_id = db.Column(db.ForeignKey('exercise.id'), nullable=False)
     url = db.Column(db.String(300), unique=True)
 
 
 class Exercise_area(db.Model):
     __tablename__ = 'ex_area'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    exercise_id = db.Column(db.ForeignKey('exercise.id'), nullable=False)
+    ex_id = db.Column(db.ForeignKey('exercise.id'), nullable=False)
     arm = db.Column(db.String(30))
     shoulder = db.Column(db.String(30))
     lower_body = db.Column(db.String(30))
     chest = db.Column(db.String(30))
     back = db.Column(db.String(30))
     whole_body = db.Column(db.String(30))
+    belly = db.Column(db.String(30))
 
 
 class Food(db.Model):
@@ -112,3 +114,38 @@ class Food(db.Model):
     protein = db.Column(db.String(30))
     fat = db.Column(db.String(30))
     calorie = db.Column(db.String(30))
+    url = db.Column(db.String(300), unique=True)
+    food_image = db.relationship('Food_image', backref='food', lazy=True)
+
+    @property
+    def serialize(self):
+        return{
+            'id': self.id,
+            'name': self.name,
+            'carbohydrate': self.carbohydrate,
+            'protein': self.protein,
+            'fat': self.fat,
+            'calorie': self.calorie,
+            'url': self.url,
+        }
+
+
+class Food_image(db.Model):
+    __tablename__ = 'food_image'
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    food_id = db.Column(db.ForeignKey('food.id'), nullable=False)
+    img_src = db.Column(db.String(300), unique=True)
+    file_path = db.Column(db.String(300))
+    file_name = db.Column(db.String(30))
+    extension = db.Column(db.String(30))
+
+    @property
+    def serialize(self):
+        return{
+            'id': self.id,
+            'food_id': self.food_id,
+            'img_src': self.img_src,
+            'file_path': self.file_path,
+            'file_name': self.file_name,
+            'extension': self.extension,
+        }
