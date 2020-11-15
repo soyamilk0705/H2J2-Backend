@@ -6,8 +6,10 @@ from flask import request, make_response
 from flask import jsonify
 from flask_cors import CORS
 from flask_request_validator import (Param, JSON, GET, Pattern, validate_params)
-from models import User
 from models import db
+from models import User
+from models import Food
+from models import Food_image
 from database import DB_Manager
 from datetime import datetime, timedelta
 
@@ -123,8 +125,6 @@ def drop_user(*request_elements):
     token = request.headers.get('Authorization')
     userid = request_elements[0]
     passwd = request_elements[1]
-
-    print("request : ", request_elements[1])
         
     if token is not None:
         user = User.query.filter_by(userid=userid).first()
@@ -137,8 +137,6 @@ def drop_user(*request_elements):
             return {'delete': False}
 
     return {'token': False}
-
-
 
 
 @app.route('/api/profile/edit', methods=['PUT'])
@@ -209,7 +207,37 @@ def mileage(*request_elements):
     return {'token': False}
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:rootpassword@localhost:3306/h2j2_project"  
+
+@app.route('/api/food/list', methods=['GET'])
+@validate_params(
+    Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
+)
+def list_food(*request_elements):
+    token = request.headers.get('Authorization')
+    if token is not None:
+        auth.token_update(token)
+    page = request_elements[0]
+    check = Food.query.all()
+
+    if check is None:
+        return {'list': 'False'}
+
+    else:  
+        foods_image = Food_image.query.all()
+        Last_food = Food.query.order_by(-Food.id).first()
+        page_count = Last_food.id
+  
+        if (page_count % 10) == 0:
+            page = int(page_count / 10)
+        else:
+            page = int((page_count / 10) + 1)
+            
+        food_list = {'foods': [t.serialize for t in check]}, {'foods_image': [f.serialize for f in foods_image]}, {'page': page}
+
+    return jsonify(food_list)
+
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://"  
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
 app.config['SECRET_KEY'] = 'rlawjdtnrlawngusrlagmltndlagywls'
