@@ -207,8 +207,6 @@ def mileage(*request_elements):
     return {'token': False}
 
 
-<<<<<<< HEAD
-
 @app.route('/api/food/list', methods=['GET'])
 @validate_params(
     Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
@@ -237,9 +235,6 @@ def list_food(*request_elements):
 
     return jsonify(food_list)
 
-
-=======
->>>>>>> 5bfdb20812a4f995c0d1a06a0621754a798dc347
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://"  
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
