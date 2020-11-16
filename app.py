@@ -207,8 +207,6 @@ def mileage(*request_elements):
     return {'token': False}
 
 
-<<<<<<< HEAD
-
 @app.route('/api/food/list', methods=['GET'])
 @validate_params(
     Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
@@ -223,24 +221,28 @@ def list_food(*request_elements):
     if check is None:
         return {'list': 'False'}
 
-    else:  
+    else:
         foods_image = Food_image.query.all()
+        foods = [t.serialize for t in check]
         Last_food = Food.query.order_by(-Food.id).first()
         page_count = Last_food.id
-  
+        
+        for i in range(int(Last_food.id)):
+            for f in foods_image:
+                if foods[i]['id'] == f.food_id:
+                    foods[i]['img_src'] = f.img_src
+
         if (page_count % 10) == 0:
             page = int(page_count / 10)
         else:
             page = int((page_count / 10) + 1)
-            
-        food_list = {'foods': [t.serialize for t in check]}, {'foods_image': [f.serialize for f in foods_image]}, {'page': page}
+    
+        food_list = {'foods': foods}, {'page': page}   
 
     return jsonify(food_list)
 
 
-=======
->>>>>>> 5bfdb20812a4f995c0d1a06a0621754a798dc347
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://"  
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:rootpassword@localhost:3306/h2j2_project"  
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
 app.config['SECRET_KEY'] = 'rlawjdtnrlawngusrlagmltndlagywls'
