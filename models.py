@@ -56,7 +56,7 @@ class Clothes_category(db.Model):
 class Clothes_product(db.Model):
     __tablename__ = 'clothes_product'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    category_id = db.Column(db.ForeignKey('clothes_category.id'), nullable=False)
+    category = db.Column(db.ForeignKey('clothes_category.id'), nullable=False)
     brand = db.Column(db.String(30))
     name = db.Column(db.String(300))
     price = db.Column(db.String(30))
@@ -65,6 +65,20 @@ class Clothes_product(db.Model):
     url = db.Column(db.String(300), unique=True)
     fin = db.Column(db.String(30))
     product = db.relationship('Clothes_image', backref='clothes_product', lazy=True)
+
+    @property
+    def serialize(self):
+        return{
+            'id': self.id,
+            'category': self.category,
+            'brand': self.brand,
+            'name': self.name,
+            'price': self.price,
+            'season': self.season,
+            'sex': self.sex,
+            'url': self.url,
+            'fin': self.fin
+        }
 
 
 class Clothes_image(db.Model):
@@ -139,13 +153,3 @@ class Food_image(db.Model):
     file_name = db.Column(db.String(30))
     extension = db.Column(db.String(30))
 
-    @property
-    def serialize(self):
-        return{
-            'id': self.id,
-            'food_id': self.food_id,
-            'img_src': self.img_src,
-            'file_path': self.file_path,
-            'file_name': self.file_name,
-            'extension': self.extension,
-        }
