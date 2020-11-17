@@ -10,6 +10,8 @@ from models import db
 from models import User
 from models import Food
 from models import Food_image
+from models import Clothes_product
+from models import Clothes_image
 from database import DB_Manager
 from datetime import datetime, timedelta
 
@@ -193,7 +195,7 @@ def info_profile(*request_elements):
 
 @app.route('/api/mileage', methods=['GET'])
 @validate_params(
-    Param('userid', GET, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  # 소문자와 숫자만 가능
+    Param('userid', GET, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  
 )
 def mileage(*request_elements):
     token = request.headers.get('Authorization')
@@ -222,16 +224,15 @@ def list_food(*request_elements):
         return {'list': 'False'}
 
     else:
-        foods_image = Food_image.query.all()
         foods = [t.serialize for t in check]
-        Last_food = Food.query.order_by(-Food.id).first()
-        page_count = Last_food.id
+        page_count = int(len(foods))
         
-        for i in range(int(Last_food.id)):
-            for f in foods_image:
-                if foods[i]['id'] == f.food_id:
-                    foods[i]['img_src'] = f.img_src
-
+        for i in range(page_count):
+            foods_id = foods[i]['id']
+            foods_image = Food_image.query.filter_by(food_id=foods_id).first()
+            if foods_image:
+                foods[i]['img_src'] = foods_image.img_src
+        
         if (page_count % 10) == 0:
             page = int(page_count / 10)
         else:
@@ -241,12 +242,145 @@ def list_food(*request_elements):
 
     return jsonify(food_list)
 
-<<<<<<< HEAD
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:rootpassword@localhost:3306/h2j2_project"  
-=======
+@app.route('/api/fassion/women/ss', methods=['GET'])
+@validate_params(
+    Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
+)
+def women_ss(*request_elements):
+    token = request.headers.get('Authorization')
+    if token is not None:
+        auth.token_update(token)
+    page = request_elements[0]
+    check = Clothes_product.query.filter_by(sex='여', season='2020S/S').all()
+
+    if check is None:
+        return {'list': 'False'}
+
+    else:
+        clothes = [t.serialize for t in check]
+        page_count = int(len(clothes))
+        
+        for i in range(page_count):
+            clothes_id = clothes[i]['id']
+            clothes_image = Clothes_image.query.filter_by(product_id=clothes_id).first()
+            if clothes_image:
+                clothes[i]['img_src'] = clothes_image.img_src
+
+        if (page_count % 10) == 0:
+            page = int(page_count / 10)
+        else:
+            page = int((page_count / 10) + 1)
+    
+        clothes_list = {'clothes': clothes}, {'page': page}   
+
+    return jsonify(clothes_list)
+
+
+
+@app.route('/api/fassion/women/fw', methods=['GET'])
+@validate_params(
+    Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
+)
+def women_fw(*request_elements):
+    token = request.headers.get('Authorization')
+    if token is not None:
+        auth.token_update(token)
+    page = request_elements[0]
+    check = Clothes_product.query.filter_by(sex='여', season='2020F/W').all()
+
+    if check is None:
+        return {'list': 'False'}
+
+    else:
+        clothes = [t.serialize for t in check]
+        page_count = int(len(clothes))
+        
+        for i in range(page_count):
+            clothes_id = clothes[i]['id']
+            clothes_image = Clothes_image.query.filter_by(product_id=clothes_id).first()
+            if clothes_image:
+                clothes[i]['img_src'] = clothes_image.img_src
+
+        if (page_count % 10) == 0:
+            page = int(page_count / 10)
+        else:
+            page = int((page_count / 10) + 1)
+    
+        clothes_list = {'clothes': clothes}, {'page': page}   
+
+    return jsonify(clothes_list)
+
+
+@app.route('/api/fassion/men/ss', methods=['GET'])
+@validate_params(
+    Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
+)
+def men_ss(*request_elements):
+    token = request.headers.get('Authorization')
+    if token is not None:
+        auth.token_update(token)
+    page = request_elements[0]
+    check = Clothes_product.query.filter_by(sex='남', season='2020S/S').all()
+
+    if check is None:
+        return {'list': 'False'}
+
+    else:
+        clothes = [t.serialize for t in check]
+        page_count = int(len(clothes))
+        
+        for i in range(page_count):
+            clothes_id = clothes[i]['id']
+            clothes_image = Clothes_image.query.filter_by(product_id=clothes_id).first()
+            if clothes_image:
+                clothes[i]['img_src'] = clothes_image.img_src
+
+        if (page_count % 10) == 0:
+            page = int(page_count / 10)
+        else:
+            page = int((page_count / 10) + 1)
+    
+        clothes_list = {'clothes': clothes}, {'page': page}   
+
+    return jsonify(clothes_list)
+
+
+@app.route('/api/fassion/men/fw', methods=['GET'])
+@validate_params(
+    Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
+)
+def men_fw(*request_elements):
+    token = request.headers.get('Authorization')
+    if token is not None:
+        auth.token_update(token)
+    page = request_elements[0]
+    check = Clothes_product.query.filter_by(sex='남', season='2020F/W').all()
+
+    if check is None:
+        return {'list': 'False'}
+
+    else:
+        clothes = [t.serialize for t in check]
+        page_count = int(len(clothes))
+        
+        for i in range(page_count):
+            clothes_id = clothes[i]['id']
+            clothes_image = Clothes_image.query.filter_by(product_id=clothes_id).first()
+            if clothes_image:
+                clothes[i]['img_src'] = clothes_image.img_src
+
+        if (page_count % 10) == 0:
+            page = int(page_count / 10)
+        else:
+            page = int((page_count / 10) + 1)
+    
+        clothes_list = {'clothes': clothes}, {'page': page}   
+
+    return jsonify(clothes_list)
+
+
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://"  
->>>>>>> c121887e9a8f17ca25235b3c73d9de5e6cd2dff2
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
 app.config['SECRET_KEY'] = 'rlawjdtnrlawngusrlagmltndlagywls'
