@@ -15,7 +15,7 @@ from models import Clothes_image
 from database import DB_Manager
 from datetime import datetime, timedelta
 
-app = Flask(__name__, template_folder='../H2J2-Front/public', static_folder='../H2J2-Front/public/assets')
+app = Flask(__name__) # , template_folder='../camera', static_folder='../camera'
 DBManager = DB_Manager()
 CORS(app)
 
@@ -218,29 +218,27 @@ def list_food(*request_elements):
     if token is not None:
         auth.token_update(token)
     page = request_elements[0]
-    check = Food.query.all()
+    check = DBManager.get_page_foods(page, 5)
 
     if check is None:
         return {'list': 'False'}
 
     else:
         foods = [t.serialize for t in check]
-        page_count = int(len(foods))
+        foods_count = int(len(foods))
+        page_count = Food.query.count()
+
+        foods = DBManager.insert_foods_image(foods, foods_count)
         
-        for i in range(page_count):
-            foods_id = foods[i]['id']
-            foods_image = Food_image.query.filter_by(food_id=foods_id).first()
-            if foods_image:
-                foods[i]['img_src'] = foods_image.img_src
-        
-        if (page_count % 10) == 0:
-            page = int(page_count / 10)
+        if (page_count % 5) == 0:
+            page = int(page_count / 5)
         else:
-            page = int((page_count / 10) + 1)
+            page = int((page_count / 5) + 1)
     
         food_list = {'foods': foods}, {'page': page}   
 
     return jsonify(food_list)
+
 
 
 @app.route('/api/fassion/women/ss', methods=['GET'])
@@ -252,25 +250,22 @@ def women_ss(*request_elements):
     if token is not None:
         auth.token_update(token)
     page = request_elements[0]
-    check = Clothes_product.query.filter_by(sex='여', season='2020S/S').all()
+    check = DBManager.get_page_clothes(page, 50, '여', '2020S/S')
 
     if check is None:
         return {'list': 'False'}
 
     else:
         clothes = [t.serialize for t in check]
-        page_count = int(len(clothes))
+        clothes_count = int(len(clothes))
+        page_count = Clothes_product.query.filter_by(sex='여', season='2020S/S').count()
         
-        for i in range(page_count):
-            clothes_id = clothes[i]['id']
-            clothes_image = Clothes_image.query.filter_by(product_id=clothes_id).first()
-            if clothes_image:
-                clothes[i]['img_src'] = clothes_image.img_src
+        clothes = DBManager.insert_clothes_image(clothes, clothes_count)
 
-        if (page_count % 10) == 0:
-            page = int(page_count / 10)
+        if (page_count % 50) == 0:
+            page = int(page_count / 50)
         else:
-            page = int((page_count / 10) + 1)
+            page = int((page_count / 50) + 1)
     
         clothes_list = {'clothes': clothes}, {'page': page}   
 
@@ -287,29 +282,27 @@ def women_fw(*request_elements):
     if token is not None:
         auth.token_update(token)
     page = request_elements[0]
-    check = Clothes_product.query.filter_by(sex='여', season='2020F/W').all()
+    check = DBManager.get_page_clothes(page, 50, '여', '2020F/W')
 
     if check is None:
         return {'list': 'False'}
 
     else:
         clothes = [t.serialize for t in check]
-        page_count = int(len(clothes))
+        clothes_count = int(len(clothes))
+        page_count = Clothes_product.query.filter_by(sex='여', season='2020F/W').count()
         
-        for i in range(page_count):
-            clothes_id = clothes[i]['id']
-            clothes_image = Clothes_image.query.filter_by(product_id=clothes_id).first()
-            if clothes_image:
-                clothes[i]['img_src'] = clothes_image.img_src
+        clothes = DBManager.insert_clothes_image(clothes, clothes_count)
 
-        if (page_count % 10) == 0:
-            page = int(page_count / 10)
+        if (page_count % 50) == 0:
+            page = int(page_count / 50)
         else:
-            page = int((page_count / 10) + 1)
+            page = int((page_count / 50) + 1)
     
         clothes_list = {'clothes': clothes}, {'page': page}   
 
     return jsonify(clothes_list)
+
 
 
 @app.route('/api/fassion/men/ss', methods=['GET'])
@@ -321,29 +314,27 @@ def men_ss(*request_elements):
     if token is not None:
         auth.token_update(token)
     page = request_elements[0]
-    check = Clothes_product.query.filter_by(sex='남', season='2020S/S').all()
+    check = DBManager.get_page_clothes(page, 50, '남', '2020S/S')
 
     if check is None:
         return {'list': 'False'}
 
     else:
         clothes = [t.serialize for t in check]
-        page_count = int(len(clothes))
+        clothes_count = int(len(clothes))
+        page_count = Clothes_product.query.filter_by(sex='남', season='2020S/S').count()
         
-        for i in range(page_count):
-            clothes_id = clothes[i]['id']
-            clothes_image = Clothes_image.query.filter_by(product_id=clothes_id).first()
-            if clothes_image:
-                clothes[i]['img_src'] = clothes_image.img_src
+        clothes = DBManager.insert_clothes_image(clothes, clothes_count)
 
-        if (page_count % 10) == 0:
-            page = int(page_count / 10)
+        if (page_count % 50) == 0:
+            page = int(page_count / 50)
         else:
-            page = int((page_count / 10) + 1)
+            page = int((page_count / 50) + 1)
     
         clothes_list = {'clothes': clothes}, {'page': page}   
 
     return jsonify(clothes_list)
+
 
 
 @app.route('/api/fassion/men/fw', methods=['GET'])
@@ -355,32 +346,31 @@ def men_fw(*request_elements):
     if token is not None:
         auth.token_update(token)
     page = request_elements[0]
-    check = Clothes_product.query.filter_by(sex='남', season='2020F/W').all()
+    check = DBManager.get_page_clothes(page, 50, '남', '2020F/W')
 
     if check is None:
         return {'list': 'False'}
 
     else:
         clothes = [t.serialize for t in check]
-        page_count = int(len(clothes))
-        
-        for i in range(page_count):
-            clothes_id = clothes[i]['id']
-            clothes_image = Clothes_image.query.filter_by(product_id=clothes_id).first()
-            if clothes_image:
-                clothes[i]['img_src'] = clothes_image.img_src
+        clothes_count = int(len(clothes))
+        page_count = Clothes_product.query.filter_by(sex='남', season='2020F/W').count()
 
-        if (page_count % 10) == 0:
-            page = int(page_count / 10)
+        clothes = DBManager.insert_clothes_image(clothes, clothes_count)
+
+        if (page_count % 50) == 0:
+            page = int(page_count / 50)
         else:
-            page = int((page_count / 10) + 1)
+            page = int((page_count / 50) + 1)
     
         clothes_list = {'clothes': clothes}, {'page': page}   
 
     return jsonify(clothes_list)
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://"  
+
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:rootpassword@localhost:3306/h2j2_project"  
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
 app.config['SECRET_KEY'] = 'rlawjdtnrlawngusrlagmltndlagywls'
