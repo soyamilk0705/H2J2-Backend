@@ -5,6 +5,9 @@ from models import Food
 from models import Food_image
 from models import Clothes_image
 from models import Clothes_product
+from models import Exercise
+from models import Exercise_area
+from models import Exercise_video
 
 
 class DB_Manager(object):
@@ -66,15 +69,9 @@ class DB_Manager(object):
         return check
 
 
-    def get_page_clothes(self, page, number, sex, season):
-        start = int(page) * number - number
-        end = int(page) * number
-        check = Clothes_product.query.filter_by(sex=sex, season=season).slice(start, end).all() 
+    def insert_foods_image(self, foods):
+        foods_count = int(len(foods))
 
-        return check
-
-
-    def insert_foods_image(self, foods, foods_count):
         for i in range(foods_count):
             foods_id = foods[i]['id']
             foods_image = Food_image.query.filter_by(food_id=foods_id).first()
@@ -84,7 +81,17 @@ class DB_Manager(object):
         return foods
 
 
-    def insert_clothes_image(self, clothes, clothes_count):
+    def get_page_clothes(self, page, number, sex, season):
+            start = int(page) * number - number
+            end = int(page) * number
+            check = Clothes_product.query.filter_by(sex=sex, season=season).slice(start, end).all() 
+
+            return check
+
+
+    def insert_clothes_image(self, clothes):
+        clothes_count = int(len(clothes))
+        
         for i in range(clothes_count):
             clothes_id = clothes[i]['id']
             clothes_image = Clothes_image.query.filter_by(product_id=clothes_id).first()
@@ -92,3 +99,41 @@ class DB_Manager(object):
                 clothes[i]['img_src'] = clothes_image.img_src
 
         return clothes
+
+
+    def get_exercise(self, exer):
+        check = []
+
+        if exer == 'arm':
+            exercises = Exercise_area.query.filter_by(arm='1').all()
+        elif exer == 'shoulder':
+            exercises = Exercise_area.query.filter_by(shoulder='1').all()
+        elif exer == 'lower_body':
+            exercises = Exercise_area.query.filter_by(lower_body='1').all()
+        elif exer == 'check':
+            exercises = Exercise_area.query.filter_by(check='1').all()
+        elif exer == 'back':
+            exercises = Exercise_area.query.filter_by(back='1').all()
+        elif exer == 'whole_body':
+            exercises = Exercise_area.query.filter_by(whole_body='1').all()
+        elif exer == 'cardio':
+            exercises = Exercise_area.query.filter_by(cardio='1').all()
+        elif exer == 'belly':
+            exercises = Exercise_area.query.filter_by(belly='1').all()
+        
+        for e in exercises:
+            check.append(Exercise.query.filter_by(id=e.ex_id).first()) 
+
+        return check
+
+
+    def insert_ex_video(self, exercises):
+        exer_count = int(len(exercises))
+        
+        for i in range(exer_count):
+            exer_id = exercises[i]['id']
+            exer_video = Exercise_video.query.filter_by(ex_id=exer_id).first()
+            if exer_video:
+                exercises[i]['ex_video'] = exer_video.url
+
+        return exercises
