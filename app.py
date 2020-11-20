@@ -15,7 +15,7 @@ from models import Clothes_image
 from database import DB_Manager
 from datetime import datetime, timedelta
 
-app = Flask(__name__) # , template_folder='../camera', static_folder='../camera'
+app = Flask(__name__)
 DBManager = DB_Manager()
 CORS(app)
 
@@ -225,10 +225,8 @@ def list_food(*request_elements):
 
     else:
         foods = [t.serialize for t in check]
-        foods_count = int(len(foods))
         page_count = Food.query.count()
-
-        foods = DBManager.insert_foods_image(foods, foods_count)
+        foods = DBManager.insert_foods_image(foods)
         
         if (page_count % 5) == 0:
             page = int(page_count / 5)
@@ -257,10 +255,8 @@ def women_ss(*request_elements):
 
     else:
         clothes = [t.serialize for t in check]
-        clothes_count = int(len(clothes))
         page_count = Clothes_product.query.filter_by(sex='여', season='2020S/S').count()
-        
-        clothes = DBManager.insert_clothes_image(clothes, clothes_count)
+        clothes = DBManager.insert_clothes_image(clothes)
 
         if (page_count % 50) == 0:
             page = int(page_count / 50)
@@ -289,10 +285,8 @@ def women_fw(*request_elements):
 
     else:
         clothes = [t.serialize for t in check]
-        clothes_count = int(len(clothes))
         page_count = Clothes_product.query.filter_by(sex='여', season='2020F/W').count()
-        
-        clothes = DBManager.insert_clothes_image(clothes, clothes_count)
+        clothes = DBManager.insert_clothes_image(clothes)
 
         if (page_count % 50) == 0:
             page = int(page_count / 50)
@@ -321,10 +315,8 @@ def men_ss(*request_elements):
 
     else:
         clothes = [t.serialize for t in check]
-        clothes_count = int(len(clothes))
         page_count = Clothes_product.query.filter_by(sex='남', season='2020S/S').count()
-        
-        clothes = DBManager.insert_clothes_image(clothes, clothes_count)
+        clothes = DBManager.insert_clothes_image(clothes)
 
         if (page_count % 50) == 0:
             page = int(page_count / 50)
@@ -353,10 +345,8 @@ def men_fw(*request_elements):
 
     else:
         clothes = [t.serialize for t in check]
-        clothes_count = int(len(clothes))
         page_count = Clothes_product.query.filter_by(sex='남', season='2020F/W').count()
-
-        clothes = DBManager.insert_clothes_image(clothes, clothes_count)
+        clothes = DBManager.insert_clothes_image(clothes)
 
         if (page_count % 50) == 0:
             page = int(page_count / 50)
@@ -368,9 +358,144 @@ def men_fw(*request_elements):
     return jsonify(clothes_list)
 
 
+@app.route('/api/exercise/arm', methods=['GET'])
+def ex_arm():
+    token = request.headers.get('Authorization')
+    if token is not None:
+        auth.token_update(token)
+    check = DBManager.get_exercise('arm')
+
+    if check is None:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return {'exercises': exercises}
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:rootpassword@localhost:3306/h2j2_project"  
+@app.route('/api/exercise/shoulder', methods=['GET'])
+def ex_shoulder():
+    token = request.headers.get('Authorization')
+    if token is not None:
+        auth.token_update(token)
+    check = DBManager.get_exercise('shoulder')
+
+    if check is None:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return {'exercises': exercises}
+
+
+@app.route('/api/exercise/lower_body', methods=['GET'])
+def ex_lower_body():
+    token = request.headers.get('Authorization')
+    if token is not None:
+        auth.token_update(token)
+    check = DBManager.get_exercise('lower_body')
+
+    if check is None:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return {'exercises': exercises}
+
+
+@app.route('/api/exercise/chest', methods=['GET'])
+def ex_chest():
+    token = request.headers.get('Authorization')
+    if token is not None:
+        auth.token_update(token)
+    check = DBManager.get_exercise('chest')
+
+    if check is None:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return {'exercises': exercises}
+
+
+@app.route('/api/exercise/back', methods=['GET'])
+def ex_back():
+    token = request.headers.get('Authorization')
+    if token is not None:
+        auth.token_update(token)
+    check = DBManager.get_exercise('back')
+
+    if check is None:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return {'exercises': exercises}
+
+
+@app.route('/api/exercise/whole_body', methods=['GET'])
+def ex_whole_body():
+    token = request.headers.get('Authorization')
+    if token is not None:
+        auth.token_update(token)
+    check = DBManager.get_exercise('whole_body')
+
+    if check is None:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return {'exercises': exercises}
+
+
+@app.route('/api/exercise/cardio', methods=['GET'])
+def ex_cardio():
+    token = request.headers.get('Authorization')
+    if token is not None:
+        auth.token_update(token)
+    check = DBManager.get_exercise('cardio')
+
+    if check is None:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return {'exercises': exercises}
+
+
+@app.route('/api/exercise/belly', methods=['GET'])
+def ex_belly():
+    token = request.headers.get('Authorization')
+    if token is not None:
+        auth.token_update(token)
+    check = DBManager.get_exercise('belly')
+
+    if check is None:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return {'exercises': exercises}
+
+
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://"  
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
 app.config['SECRET_KEY'] = 'rlawjdtnrlawngusrlagmltndlagywls'
