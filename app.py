@@ -220,7 +220,7 @@ def list_food(*request_elements):
     page = request_elements[0]
     check = DBManager.get_page_foods(page, 5)
 
-    if check is None:
+    if not check:
         return {'list': 'False'}
 
     else:
@@ -250,7 +250,7 @@ def women_ss(*request_elements):
     page = request_elements[0]
     check = DBManager.get_page_clothes(page, 50, '여', '2020S/S')
 
-    if check is None:
+    if not check:
         return {'list': 'False'}
 
     else:
@@ -280,7 +280,7 @@ def women_fw(*request_elements):
     page = request_elements[0]
     check = DBManager.get_page_clothes(page, 50, '여', '2020F/W')
 
-    if check is None:
+    if not check:
         return {'list': 'False'}
 
     else:
@@ -310,7 +310,7 @@ def men_ss(*request_elements):
     page = request_elements[0]
     check = DBManager.get_page_clothes(page, 50, '남', '2020S/S')
 
-    if check is None:
+    if not check:
         return {'list': 'False'}
 
     else:
@@ -340,7 +340,7 @@ def men_fw(*request_elements):
     page = request_elements[0]
     check = DBManager.get_page_clothes(page, 50, '남', '2020F/W')
 
-    if check is None:
+    if not check:
         return {'list': 'False'}
 
     else:
@@ -365,14 +365,14 @@ def ex_arm():
         auth.token_update(token)
     check = DBManager.get_exercise('arm')
 
-    if check is None:
+    if not check:
         return {'list': 'False'}
 
     else:
         exercises = [t.serialize for t in check]
         exercises = DBManager.insert_ex_video(exercises)
 
-    return {'exercises': exercises}
+    return jsonify(exercises)
 
 
 @app.route('/api/exercise/shoulder', methods=['GET'])
@@ -382,14 +382,14 @@ def ex_shoulder():
         auth.token_update(token)
     check = DBManager.get_exercise('shoulder')
 
-    if check is None:
+    if not check:
         return {'list': 'False'}
 
     else:
         exercises = [t.serialize for t in check]
         exercises = DBManager.insert_ex_video(exercises)
 
-    return {'exercises': exercises}
+    return jsonify(exercises)
 
 
 @app.route('/api/exercise/lower_body', methods=['GET'])
@@ -399,14 +399,14 @@ def ex_lower_body():
         auth.token_update(token)
     check = DBManager.get_exercise('lower_body')
 
-    if check is None:
+    if not check:
         return {'list': 'False'}
 
     else:
         exercises = [t.serialize for t in check]
         exercises = DBManager.insert_ex_video(exercises)
 
-    return {'exercises': exercises}
+    return jsonify(exercises)
 
 
 @app.route('/api/exercise/chest', methods=['GET'])
@@ -416,14 +416,14 @@ def ex_chest():
         auth.token_update(token)
     check = DBManager.get_exercise('chest')
 
-    if check is None:
+    if not check:
         return {'list': 'False'}
 
     else:
         exercises = [t.serialize for t in check]
         exercises = DBManager.insert_ex_video(exercises)
 
-    return {'exercises': exercises}
+    return jsonify(exercises)
 
 
 @app.route('/api/exercise/back', methods=['GET'])
@@ -433,14 +433,14 @@ def ex_back():
         auth.token_update(token)
     check = DBManager.get_exercise('back')
 
-    if check is None:
+    if not check:
         return {'list': 'False'}
 
     else:
         exercises = [t.serialize for t in check]
         exercises = DBManager.insert_ex_video(exercises)
 
-    return {'exercises': exercises}
+    return jsonify(exercises)
 
 
 @app.route('/api/exercise/whole_body', methods=['GET'])
@@ -450,14 +450,15 @@ def ex_whole_body():
         auth.token_update(token)
     check = DBManager.get_exercise('whole_body')
 
-    if check is None:
+    print(check)
+    if not check:
         return {'list': 'False'}
 
     else:
         exercises = [t.serialize for t in check]
         exercises = DBManager.insert_ex_video(exercises)
 
-    return {'exercises': exercises}
+    return jsonify(exercises)
 
 
 @app.route('/api/exercise/cardio', methods=['GET'])
@@ -467,14 +468,14 @@ def ex_cardio():
         auth.token_update(token)
     check = DBManager.get_exercise('cardio')
 
-    if check is None:
+    if not check:
         return {'list': 'False'}
 
     else:
         exercises = [t.serialize for t in check]
         exercises = DBManager.insert_ex_video(exercises)
 
-    return {'exercises': exercises}
+    return jsonify(exercises)
 
 
 @app.route('/api/exercise/belly', methods=['GET'])
@@ -484,18 +485,151 @@ def ex_belly():
         auth.token_update(token)
     check = DBManager.get_exercise('belly')
 
-    if check is None:
+    if not check:
         return {'list': 'False'}
 
     else:
         exercises = [t.serialize for t in check]
         exercises = DBManager.insert_ex_video(exercises)
 
-    return {'exercises': exercises}
+    return jsonify(exercises)
+
+
+@app.route('/api/exercise/arm/search', methods=['GET'])
+@validate_params(
+    Param('title', GET, str, rules=[Pattern(r'^.{1,30}$')], required=True)
+)
+def search_arm(*request_elements):
+    kw = request_elements[0]
+    exercises = DBManager.get_exercise('arm')
+    check = DBManager.search_exercise(exercises, kw)
+
+    if not check:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return jsonify(exercises)
+
+
+@app.route('/api/exercise/shoulder/search', methods=['GET'])
+@validate_params(
+    Param('title', GET, str, rules=[Pattern(r'^.{1,30}$')], required=True)
+)
+def search_shoulder(*request_elements):
+    kw = request_elements[0]
+    exercises = DBManager.get_exercise('shoulder')
+    check = DBManager.search_exercise(exercises, kw)
+
+    if not check:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return jsonify(exercises)
+
+
+@app.route('/api/exercise/lower_body/search', methods=['GET'])
+@validate_params(
+    Param('title', GET, str, rules=[Pattern(r'^.{1,30}$')], required=True)
+)
+def search_lower_body(*request_elements):
+    kw = request_elements[0]
+    exercises = DBManager.get_exercise('lower_body')
+    check = DBManager.search_exercise(exercises, kw)
+
+    if not check:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return jsonify(exercises)
+
+
+@app.route('/api/exercise/chest/search', methods=['GET'])
+@validate_params(
+    Param('title', GET, str, rules=[Pattern(r'^.{1,30}$')], required=True)
+)
+def search_chest(*request_elements):
+    kw = request_elements[0]
+    exercises = DBManager.get_exercise('chest')
+    check = DBManager.search_exercise(exercises, kw)
+
+    if not check:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return jsonify(exercises)
+
+
+@app.route('/api/exercise/back/search', methods=['GET'])
+@validate_params(
+    Param('title', GET, str, rules=[Pattern(r'^.{1,30}$')], required=True)
+)
+def search_back(*request_elements):
+    kw = request_elements[0]
+    exercises = DBManager.get_exercise('back')
+    check = DBManager.search_exercise(exercises, kw)
+
+    if not check:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return jsonify(exercises)
+
+
+@app.route('/api/exercise/whole_body/search', methods=['GET'])
+@validate_params(
+    Param('title', GET, str, rules=[Pattern(r'^.{1,30}$')], required=True)
+)
+def search_whole_body(*request_elements):
+    kw = request_elements[0]
+    exercises = DBManager.get_exercise('whole_body')
+    check = DBManager.search_exercise(exercises, kw)
+
+    if not check:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return jsonify(exercises)
+
+
+@app.route('/api/exercise/belly/search', methods=['GET'])
+@validate_params(
+    Param('title', GET, str, rules=[Pattern(r'^.{1,30}$')], required=True)
+)
+def search_belly(*request_elements):
+    kw = request_elements[0]
+    exercises = DBManager.get_exercise('belly')
+    check = DBManager.search_exercise(exercises, kw)
+
+    if not check:
+        return {'list': 'False'}
+
+    else:
+        exercises = [t.serialize for t in check]
+        exercises = DBManager.insert_ex_video(exercises)
+
+    return jsonify(exercises)
 
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://"  
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:rootpassword@localhost:3306/h2j2_project"  
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
 app.config['SECRET_KEY'] = 'rlawjdtnrlawngusrlagmltndlagywls'
