@@ -99,6 +99,13 @@ class Exercise(db.Model):
     ex_video = db.relationship('Exercise_video', backref='exercise', lazy=True)
     ex_area = db.relationship('Exercise_area', backref='exercise', lazy=True)
 
+    @property
+    def serialize(self):
+        return{
+            'id': self.id,
+            'name': self.name,
+        }
+
 
 class Exercise_video(db.Model):
     __tablename__ = 'ex_video'
