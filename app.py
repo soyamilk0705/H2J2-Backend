@@ -120,7 +120,7 @@ def logout(*request_elements):
 
 @app.route('/api/profile/drop', methods=['POST'])
 @validate_params(
-    Param('userid', JSON, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  # 소문자와 숫자만 가능
+    Param('userid', JSON, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True), 
     Param('passwd', JSON, str, required=True)
 )
 def drop_user(*request_elements):
@@ -629,7 +629,7 @@ def search_belly(*request_elements):
 
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:rootpassword@localhost:3306/h2j2_project"  
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql:"  
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
 app.config['SECRET_KEY'] = 'rlawjdtnrlawngusrlagmltndlagywls'
