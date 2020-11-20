@@ -121,8 +121,10 @@ class DB_Manager(object):
         elif exer == 'belly':
             exercises = Exercise_area.query.filter_by(belly='1').all()
         
-        for e in exercises:
-            check.append(Exercise.query.filter_by(id=e.ex_id).first()) 
+
+        if exercises:
+            for e in exercises:
+                check.append(Exercise.query.filter_by(id=e.ex_id).first()) 
 
         return check
 
@@ -137,3 +139,20 @@ class DB_Manager(object):
                 exercises[i]['ex_video'] = exer_video.url
 
         return exercises
+
+
+    def search_exercise(self, exercises, kw):
+        result = []
+        search = '%%{}%%'.format(kw)
+   
+        for ex in exercises:
+            ex = Exercise.query.filter_by(id=ex.id)
+            search_result = ex.filter(Exercise.name.like(search) | Exercise_video.url.like(search)).distinct().first()  # distinct는 중복제거
+            
+            if search_result is None:
+                continue
+            else :
+                result.append(search_result) 
+            
+        return result
+        
