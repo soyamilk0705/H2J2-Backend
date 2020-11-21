@@ -130,7 +130,7 @@ class DB_Manager(object):
     def insert_ex_video(self, exercises):
         exer_count = int(len(exercises))
         
-        for i in range(exer_count):
+        for i in range(exer_count): 
             exer_id = exercises[i]['id']
             exer_video = Exercise_video.query.filter_by(ex_id=exer_id).first()
             if exer_video:
@@ -154,3 +154,8 @@ class DB_Manager(object):
             
         return result
         
+    
+    def add_mileage(self, user):
+        user.mileage = int(user.mileage) + 1
+
+        db.session.commit() 
