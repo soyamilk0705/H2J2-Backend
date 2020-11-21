@@ -2,6 +2,7 @@ import bcrypt
 import jwt
 from flask import Flask
 from flask import render_template
+from flask import redirect
 from flask import request, make_response
 from flask import jsonify
 from flask_cors import CORS
@@ -356,9 +357,15 @@ def ex_arm(*request_elements):
 
     else:
         ex_page = int(page) - 1
+        page_count = int(len(check))
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
-    
+
+        if (page_count % 1) == 0:
+            page = int(page_count / 1)
+        else:
+            page = int((page_count / 1) + 1)
+        
         exercises_list = {'exercises': exercises}, {'page': page}  
 
     return jsonify(exercises_list) 
@@ -377,8 +384,14 @@ def ex_shoulder(*request_elements):
 
     else:
         ex_page = int(page) - 1
+        page_count = int(len(check))
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
+
+        if (page_count % 1) == 0:
+            page = int(page_count / 1)
+        else:
+            page = int((page_count / 1) + 1)
 
         exercises_list = {'exercises': exercises}, {'page': page}  
 
@@ -398,8 +411,14 @@ def ex_lower_body(*request_elements):
 
     else:
         ex_page = int(page) - 1
+        page_count = int(len(check))
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
+
+        if (page_count % 1) == 0:
+            page = int(page_count / 1)
+        else:
+            page = int((page_count / 1) + 1)
     
         exercises_list = {'exercises': exercises}, {'page': page}  
 
@@ -419,8 +438,14 @@ def ex_chest(*request_elements):
 
     else:
         ex_page = int(page) - 1
+        page_count = int(len(check))
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
+
+        if (page_count % 1) == 0:
+            page = int(page_count / 1)
+        else:
+            page = int((page_count / 1) + 1)
     
         exercises_list = {'exercises': exercises}, {'page': page}  
 
@@ -440,8 +465,14 @@ def ex_back(*request_elements):
 
     else:
         ex_page = int(page) - 1
+        page_count = int(len(check))
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
+
+        if (page_count % 1) == 0:
+            page = int(page_count / 1)
+        else:
+            page = int((page_count / 1) + 1)
     
         exercises_list = {'exercises': exercises}, {'page': page}  
 
@@ -462,8 +493,14 @@ def ex_whole_body(*request_elements):
 
     else:
         ex_page = int(page) - 1
+        page_count = int(len(check))
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
+
+        if (page_count % 1) == 0:
+            page = int(page_count / 1)
+        else:
+            page = int((page_count / 1) + 1)
     
         exercises_list = {'exercises': exercises}, {'page': page}  
 
@@ -483,8 +520,14 @@ def ex_belly(*request_elements):
 
     else:
         ex_page = int(page) - 1
+        page_count = int(len(check))
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
+
+        if (page_count % 1) == 0:
+            page = int(page_count / 1)
+        else:
+            page = int((page_count / 1) + 1)
     
         exercises_list = {'exercises': exercises}, {'page': page}  
 
@@ -636,12 +679,14 @@ def camera(*request_elements):
         user = User.query.filter_by(userid=userid).first()
         if user is not None:
             DBManager.add_mileage(user)
-            return render_template("index.html")
-          
+            return {'camera': True}
+        return {'camera': False}
+
     return {'token': False}
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:rootpassword@localhost:3306/h2j2_project"  
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://"  
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
 app.config['SECRET_KEY'] = 'rlawjdtnrlawngusrlagmltndlagywls'
