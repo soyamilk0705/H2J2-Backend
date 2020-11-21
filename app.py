@@ -179,7 +179,7 @@ def edit_profile(*request_elements):
 
 @app.route('/api/profile/info', methods=['GET'])
 @validate_params(
-    Param('userid', GET, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  # 소문자와 숫자만 가능
+    Param('userid', GET, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True), 
 )
 def info_profile(*request_elements):
     token = request.headers.get('Authorization')
@@ -214,9 +214,6 @@ def mileage(*request_elements):
     Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
 )
 def list_food(*request_elements):
-    token = request.headers.get('Authorization')
-    if token is not None:
-        auth.token_update(token)
     page = request_elements[0]
     check = DBManager.get_page_foods(page, 5)
 
@@ -244,9 +241,6 @@ def list_food(*request_elements):
     Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
 )
 def women_ss(*request_elements):
-    token = request.headers.get('Authorization')
-    if token is not None:
-        auth.token_update(token)
     page = request_elements[0]
     check = DBManager.get_page_clothes(page, 50, '여', '2020S/S')
 
@@ -274,9 +268,6 @@ def women_ss(*request_elements):
     Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
 )
 def women_fw(*request_elements):
-    token = request.headers.get('Authorization')
-    if token is not None:
-        auth.token_update(token)
     page = request_elements[0]
     check = DBManager.get_page_clothes(page, 50, '여', '2020F/W')
 
@@ -304,9 +295,6 @@ def women_fw(*request_elements):
     Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
 )
 def men_ss(*request_elements):
-    token = request.headers.get('Authorization')
-    if token is not None:
-        auth.token_update(token)
     page = request_elements[0]
     check = DBManager.get_page_clothes(page, 50, '남', '2020S/S')
 
@@ -334,9 +322,6 @@ def men_ss(*request_elements):
     Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
 )
 def men_fw(*request_elements):
-    token = request.headers.get('Authorization')
-    if token is not None:
-        auth.token_update(token)
     page = request_elements[0]
     check = DBManager.get_page_clothes(page, 50, '남', '2020F/W')
 
@@ -360,9 +345,6 @@ def men_fw(*request_elements):
 
 @app.route('/api/exercise/arm', methods=['GET'])
 def ex_arm():
-    token = request.headers.get('Authorization')
-    if token is not None:
-        auth.token_update(token)
     check = DBManager.get_exercise('arm')
 
     if not check:
@@ -377,9 +359,6 @@ def ex_arm():
 
 @app.route('/api/exercise/shoulder', methods=['GET'])
 def ex_shoulder():
-    token = request.headers.get('Authorization')
-    if token is not None:
-        auth.token_update(token)
     check = DBManager.get_exercise('shoulder')
 
     if not check:
@@ -394,9 +373,6 @@ def ex_shoulder():
 
 @app.route('/api/exercise/lower_body', methods=['GET'])
 def ex_lower_body():
-    token = request.headers.get('Authorization')
-    if token is not None:
-        auth.token_update(token)
     check = DBManager.get_exercise('lower_body')
 
     if not check:
@@ -411,9 +387,6 @@ def ex_lower_body():
 
 @app.route('/api/exercise/chest', methods=['GET'])
 def ex_chest():
-    token = request.headers.get('Authorization')
-    if token is not None:
-        auth.token_update(token)
     check = DBManager.get_exercise('chest')
 
     if not check:
@@ -428,9 +401,6 @@ def ex_chest():
 
 @app.route('/api/exercise/back', methods=['GET'])
 def ex_back():
-    token = request.headers.get('Authorization')
-    if token is not None:
-        auth.token_update(token)
     check = DBManager.get_exercise('back')
 
     if not check:
@@ -445,9 +415,6 @@ def ex_back():
 
 @app.route('/api/exercise/whole_body', methods=['GET'])
 def ex_whole_body():
-    token = request.headers.get('Authorization')
-    if token is not None:
-        auth.token_update(token)
     check = DBManager.get_exercise('whole_body')
 
     print(check)
@@ -461,28 +428,8 @@ def ex_whole_body():
     return jsonify(exercises)
 
 
-@app.route('/api/exercise/cardio', methods=['GET'])
-def ex_cardio():
-    token = request.headers.get('Authorization')
-    if token is not None:
-        auth.token_update(token)
-    check = DBManager.get_exercise('cardio')
-
-    if not check:
-        return {'list': 'False'}
-
-    else:
-        exercises = [t.serialize for t in check]
-        exercises = DBManager.insert_ex_video(exercises)
-
-    return jsonify(exercises)
-
-
 @app.route('/api/exercise/belly', methods=['GET'])
 def ex_belly():
-    token = request.headers.get('Authorization')
-    if token is not None:
-        auth.token_update(token)
     check = DBManager.get_exercise('belly')
 
     if not check:
