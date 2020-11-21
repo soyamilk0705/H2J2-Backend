@@ -205,7 +205,7 @@ def mileage(*request_elements):
         user = User.query.filter_by(userid=userid).first()
         if user is not None:
             return {'mileage': user.mileage}
-
+    
     return {'token': False}
 
 
@@ -344,77 +344,116 @@ def men_fw(*request_elements):
 
 
 @app.route('/api/exercise/arm', methods=['GET'])
-def ex_arm():
+@validate_params(
+    Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
+)
+def ex_arm(*request_elements):
+    page = request_elements[0]
     check = DBManager.get_exercise('arm')
 
     if not check:
         return {'list': 'False'}
 
     else:
-        exercises = [t.serialize for t in check]
+        ex_page = int(page) - 1
+        exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
+    
+        exercises_list = {'exercises': exercises}, {'page': page}  
 
-    return jsonify(exercises)
+    return jsonify(exercises_list) 
 
 
 @app.route('/api/exercise/shoulder', methods=['GET'])
-def ex_shoulder():
+@validate_params(
+    Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
+)
+def ex_shoulder(*request_elements):
+    page = request_elements[0]
     check = DBManager.get_exercise('shoulder')
 
     if not check:
         return {'list': 'False'}
 
     else:
-        exercises = [t.serialize for t in check]
+        ex_page = int(page) - 1
+        exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
 
-    return jsonify(exercises)
+        exercises_list = {'exercises': exercises}, {'page': page}  
+
+    return jsonify(exercises_list) 
 
 
 @app.route('/api/exercise/lower_body', methods=['GET'])
-def ex_lower_body():
+@validate_params(
+    Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
+)
+def ex_lower_body(*request_elements):
+    page = request_elements[0]
     check = DBManager.get_exercise('lower_body')
 
     if not check:
         return {'list': 'False'}
 
     else:
-        exercises = [t.serialize for t in check]
+        ex_page = int(page) - 1
+        exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
+    
+        exercises_list = {'exercises': exercises}, {'page': page}  
 
-    return jsonify(exercises)
+    return jsonify(exercises_list) 
 
 
 @app.route('/api/exercise/chest', methods=['GET'])
-def ex_chest():
+@validate_params(
+    Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
+)
+def ex_chest(*request_elements):
+    page = request_elements[0]
     check = DBManager.get_exercise('chest')
 
     if not check:
         return {'list': 'False'}
 
     else:
-        exercises = [t.serialize for t in check]
+        ex_page = int(page) - 1
+        exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
+    
+        exercises_list = {'exercises': exercises}, {'page': page}  
 
-    return jsonify(exercises)
+    return jsonify(exercises_list) 
 
 
 @app.route('/api/exercise/back', methods=['GET'])
-def ex_back():
+@validate_params(
+    Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
+)
+def ex_back(*request_elements):
+    page = request_elements[0]
     check = DBManager.get_exercise('back')
 
     if not check:
         return {'list': 'False'}
 
     else:
-        exercises = [t.serialize for t in check]
+        ex_page = int(page) - 1
+        exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
+    
+        exercises_list = {'exercises': exercises}, {'page': page}  
 
-    return jsonify(exercises)
+    return jsonify(exercises_list) 
 
 
 @app.route('/api/exercise/whole_body', methods=['GET'])
-def ex_whole_body():
+@validate_params(
+    Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
+)
+def ex_whole_body(*request_elements):
+    page = request_elements[0]
     check = DBManager.get_exercise('whole_body')
 
     print(check)
@@ -422,24 +461,34 @@ def ex_whole_body():
         return {'list': 'False'}
 
     else:
-        exercises = [t.serialize for t in check]
+        ex_page = int(page) - 1
+        exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
+    
+        exercises_list = {'exercises': exercises}, {'page': page}  
 
-    return jsonify(exercises)
+    return jsonify(exercises_list) 
 
 
 @app.route('/api/exercise/belly', methods=['GET'])
-def ex_belly():
+@validate_params(
+    Param('page', GET, str, rules=[Pattern(r'\d')], required=True)
+)
+def ex_belly(*request_elements):
+    page = request_elements[0]
     check = DBManager.get_exercise('belly')
 
     if not check:
         return {'list': 'False'}
 
     else:
-        exercises = [t.serialize for t in check]
+        ex_page = int(page) - 1
+        exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
+    
+        exercises_list = {'exercises': exercises}, {'page': page}  
 
-    return jsonify(exercises)
+    return jsonify(exercises_list) 
 
 
 @app.route('/api/exercise/arm/search', methods=['GET'])
@@ -574,6 +623,22 @@ def search_belly(*request_elements):
 
     return jsonify(exercises)
 
+
+@app.route('/api/exercise/camera', methods=['POST'])
+@validate_params(
+    Param('userid', GET, str, rules=[Pattern(r'^[a-z0-9]+$')], required=True),  
+)
+def camera(*request_elements):
+    token = request.headers.get('Authorization')
+    userid = request_elements[0]
+
+    if token is not None:
+        user = User.query.filter_by(userid=userid).first()
+        if user is not None:
+            DBManager.add_mileage(user)
+            return render_template("index.html")
+          
+    return {'token': False}
 
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:rootpassword@localhost:3306/h2j2_project"  
