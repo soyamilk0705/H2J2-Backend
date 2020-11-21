@@ -110,14 +110,12 @@ class DB_Manager(object):
             exercises = Exercise_area.query.filter_by(shoulder='1').all()
         elif exer == 'lower_body':
             exercises = Exercise_area.query.filter_by(lower_body='1').all()
-        elif exer == 'check':
-            exercises = Exercise_area.query.filter_by(check='1').all()
+        elif exer == 'chest':
+            exercises = Exercise_area.query.filter_by(chest='1').all()
         elif exer == 'back':
             exercises = Exercise_area.query.filter_by(back='1').all()
         elif exer == 'whole_body':
             exercises = Exercise_area.query.filter_by(whole_body='1').all()
-        elif exer == 'cardio':
-            exercises = Exercise_area.query.filter_by(cardio='1').all()
         elif exer == 'belly':
             exercises = Exercise_area.query.filter_by(belly='1').all()
         
