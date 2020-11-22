@@ -243,7 +243,7 @@ def list_food(*request_elements):
 )
 def women_ss(*request_elements):
     page = request_elements[0]
-    check = DBManager.get_page_clothes(page, 50, '여', '2020S/S')
+    check = DBManager.get_page_clothes(page, 40, '여', '2020S/S')
 
     if not check:
         return {'list': 'False'}
@@ -253,10 +253,10 @@ def women_ss(*request_elements):
         page_count = Clothes_product.query.filter_by(sex='여', season='2020S/S').count()
         clothes = DBManager.insert_clothes_image(clothes)
 
-        if (page_count % 50) == 0:
-            page = int(page_count / 50)
+        if (page_count % 40) == 0:
+            page = int(page_count / 40)
         else:
-            page = int((page_count / 50) + 1)
+            page = int((page_count / 40) + 1)
     
         clothes_list = {'clothes': clothes}, {'page': page}   
 
@@ -270,7 +270,7 @@ def women_ss(*request_elements):
 )
 def women_fw(*request_elements):
     page = request_elements[0]
-    check = DBManager.get_page_clothes(page, 50, '여', '2020F/W')
+    check = DBManager.get_page_clothes(page, 40, '여', '2020F/W')
 
     if not check:
         return {'list': 'False'}
@@ -280,10 +280,10 @@ def women_fw(*request_elements):
         page_count = Clothes_product.query.filter_by(sex='여', season='2020F/W').count()
         clothes = DBManager.insert_clothes_image(clothes)
 
-        if (page_count % 50) == 0:
-            page = int(page_count / 50)
+        if (page_count % 40) == 0:
+            page = int(page_count / 40)
         else:
-            page = int((page_count / 50) + 1)
+            page = int((page_count / 40) + 1)
     
         clothes_list = {'clothes': clothes}, {'page': page}   
 
@@ -297,7 +297,7 @@ def women_fw(*request_elements):
 )
 def men_ss(*request_elements):
     page = request_elements[0]
-    check = DBManager.get_page_clothes(page, 50, '남', '2020S/S')
+    check = DBManager.get_page_clothes(page, 40, '남', '2020S/S')
 
     if not check:
         return {'list': 'False'}
@@ -307,10 +307,10 @@ def men_ss(*request_elements):
         page_count = Clothes_product.query.filter_by(sex='남', season='2020S/S').count()
         clothes = DBManager.insert_clothes_image(clothes)
 
-        if (page_count % 50) == 0:
-            page = int(page_count / 50)
+        if (page_count % 40) == 0:
+            page = int(page_count / 40)
         else:
-            page = int((page_count / 50) + 1)
+            page = int((page_count / 40) + 1)
     
         clothes_list = {'clothes': clothes}, {'page': page}   
 
@@ -324,7 +324,7 @@ def men_ss(*request_elements):
 )
 def men_fw(*request_elements):
     page = request_elements[0]
-    check = DBManager.get_page_clothes(page, 50, '남', '2020F/W')
+    check = DBManager.get_page_clothes(page, 40, '남', '2020F/W')
 
     if not check:
         return {'list': 'False'}
@@ -334,10 +334,10 @@ def men_fw(*request_elements):
         page_count = Clothes_product.query.filter_by(sex='남', season='2020F/W').count()
         clothes = DBManager.insert_clothes_image(clothes)
 
-        if (page_count % 50) == 0:
-            page = int(page_count / 50)
+        if (page_count % 40) == 0:
+            page = int(page_count / 40)
         else:
-            page = int((page_count / 50) + 1)
+            page = int((page_count / 40) + 1)
     
         clothes_list = {'clothes': clothes}, {'page': page}   
 
@@ -360,13 +360,8 @@ def ex_arm(*request_elements):
         page_count = int(len(check))
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
-
-        if (page_count % 1) == 0:
-            page = int(page_count / 1)
-        else:
-            page = int((page_count / 1) + 1)
         
-        exercises_list = {'exercises': exercises}, {'page': page}  
+        exercises_list = {'exercises': exercises}, {'page': page_count}  
 
     return jsonify(exercises_list) 
 
@@ -388,12 +383,7 @@ def ex_shoulder(*request_elements):
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
 
-        if (page_count % 1) == 0:
-            page = int(page_count / 1)
-        else:
-            page = int((page_count / 1) + 1)
-
-        exercises_list = {'exercises': exercises}, {'page': page}  
+        exercises_list = {'exercises': exercises}, {'page': page_count}  
 
     return jsonify(exercises_list) 
 
@@ -414,13 +404,8 @@ def ex_lower_body(*request_elements):
         page_count = int(len(check))
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
-
-        if (page_count % 1) == 0:
-            page = int(page_count / 1)
-        else:
-            page = int((page_count / 1) + 1)
     
-        exercises_list = {'exercises': exercises}, {'page': page}  
+        exercises_list = {'exercises': exercises}, {'page': page_count}  
 
     return jsonify(exercises_list) 
 
@@ -441,13 +426,8 @@ def ex_chest(*request_elements):
         page_count = int(len(check))
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
-
-        if (page_count % 1) == 0:
-            page = int(page_count / 1)
-        else:
-            page = int((page_count / 1) + 1)
     
-        exercises_list = {'exercises': exercises}, {'page': page}  
+        exercises_list = {'exercises': exercises}, {'page': page_count}  
 
     return jsonify(exercises_list) 
 
@@ -468,13 +448,8 @@ def ex_back(*request_elements):
         page_count = int(len(check))
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
-
-        if (page_count % 1) == 0:
-            page = int(page_count / 1)
-        else:
-            page = int((page_count / 1) + 1)
     
-        exercises_list = {'exercises': exercises}, {'page': page}  
+        exercises_list = {'exercises': exercises}, {'page': page_count}  
 
     return jsonify(exercises_list) 
 
@@ -496,13 +471,8 @@ def ex_whole_body(*request_elements):
         page_count = int(len(check))
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
-
-        if (page_count % 1) == 0:
-            page = int(page_count / 1)
-        else:
-            page = int((page_count / 1) + 1)
     
-        exercises_list = {'exercises': exercises}, {'page': page}  
+        exercises_list = {'exercises': exercises}, {'page': page_count}  
 
     return jsonify(exercises_list) 
 
@@ -523,13 +493,8 @@ def ex_belly(*request_elements):
         page_count = int(len(check))
         exercises = [check[ex_page].serialize]
         exercises = DBManager.insert_ex_video(exercises)
-
-        if (page_count % 1) == 0:
-            page = int(page_count / 1)
-        else:
-            page = int((page_count / 1) + 1)
     
-        exercises_list = {'exercises': exercises}, {'page': page}  
+        exercises_list = {'exercises': exercises}, {'page': page_count}  
 
     return jsonify(exercises_list) 
 
